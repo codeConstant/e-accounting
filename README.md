@@ -7,12 +7,13 @@ designed to manage user accounts, perform transactions, and handle account manag
 the database for storing user, customer accounts and transaction details.
 
 ## Services
-
 - User Service: Manages user accounts and account-related operations.
     - Table [user_tbl, customer_account_tbl]
+    - Port 20100
 - Transaction Service: Handles money transfers, balance update , including validation and transaction processing.
     - Table [transaction_tbl]
-
+    - Port 20200
+  
 ## Features
 
 - User Service:
