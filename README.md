@@ -53,29 +53,37 @@ the database for storing user, customer accounts and transaction details.
 
       - user/resource/db/schema.sql
 
+## Project APIs
+
+     - Insomnia_2024-10-16.json
+
 ## Endpoints
 
 - User Service:
-    - Create User:
-        - POST /user
-    - Update User:
-        - PUT /user
-    - Get User by ID:
-        - GET /user/{id}
-    - Get All Users:
-        - GET /user
-    - Create Account:
-        - POST /account
-    - Get Account Details by Account Number:
-        - GET /account/getAccountDetails/{accNumber}
-    - Update Account Status:
-        - PUT /account/status-update
+    - Host :  http://127.0.0.1:20100
+    - API
+        - Create User:
+            - POST /user
+        - Update User:
+            - PUT /user
+        - Get User by ID:
+            - GET /user/{id}
+        - Get All Users:
+            - GET /user
+        - Create Account:
+            - POST /account
+        - Get Account Details by Account Number:
+            - GET /account/getAccountDetails/{accNumber}
+        - Update Account Status:
+            - PUT /account/status-update
 
 - Transaction Service:
-    - Transfer Money:
-        - POST /transaction/transferAmount
-    - Balance update:
-        - POST /transaction/transferAmount
+    - Host :  http://127.0.0.1:20200
+    - API
+        - Transfer Money:
+            - POST /transaction/transferAmount
+        - Balance update:
+            - POST /transaction/transferAmount
 
 ## Contact
 
