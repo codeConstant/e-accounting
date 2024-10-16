@@ -48,6 +48,10 @@ the database for storing user, customer accounts and transaction details.
       - CREATE DATABASE user;
       - CREATE DATABASE transaction;
 
+## Schema
+
+      - user/resource/db/schema.sql
+
 ## Endpoints
 
 - User Service:
@@ -71,3 +75,8 @@ the database for storing user, customer accounts and transaction details.
         - POST /transaction/transferAmount
     - Balance update:
         - POST /transaction/transferAmount
+
+## Contact
+
+- For any inquiries or issues, please contact:
+- Email: mdarefin125@gmail.com

@@ -45,6 +45,7 @@ public class AccountService {
         UserAccount account = accountRepository.findByAccountNumber(balanceUpdateRequest.getAccountNumber())
                 .orElseThrow(() -> new NotFoundError(Messages.SENDER_ACC_NOT_FOUND));
         account.setBalance(account.getBalance().add(balanceUpdateRequest.getAmount()));
+        account.setLastTransactionDate(LocalDate.now());
         return accountRepository.save(account);
     }
 
