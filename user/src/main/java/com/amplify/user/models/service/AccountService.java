@@ -4,6 +4,7 @@ import com.amplify.common.enums.AccountStatus;
 import com.amplify.common.enums.Messages;
 import com.amplify.common.errors.DetailedError;
 import com.amplify.common.errors.NotFoundError;
+import com.amplify.common.models.BalanceUpdateRequest;
 import com.amplify.common.models.TransferAmountRequest;
 import com.amplify.user.models.entities.UserAccount;
 import com.amplify.user.models.repository.AccountRepository;
@@ -40,6 +41,12 @@ public class AccountService {
         return accountRepository.findByAccountNumber(accountNumber).orElseThrow(() -> new NotFoundError("Account Number Not Found"));
     }
 
+    public UserAccount balanceUpdate(BalanceUpdateRequest balanceUpdateRequest) {
+        UserAccount account = accountRepository.findByAccountNumber(balanceUpdateRequest.getAccountNumber())
+                .orElseThrow(() -> new NotFoundError(Messages.SENDER_ACC_NOT_FOUND));
+        account.setBalance(account.getBalance().add(balanceUpdateRequest.getAmount()));
+        return accountRepository.save(account);
+    }
 
     @Transactional
     public boolean transferAmount(TransferAmountRequest transferAmountRequest ) {

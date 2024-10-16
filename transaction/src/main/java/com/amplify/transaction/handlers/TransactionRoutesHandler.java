@@ -5,6 +5,7 @@ import com.amplify.common.enums.TransactionType;
 import com.amplify.common.errors.DetailedError;
 import com.amplify.common.errors.ErrorResponse;
 import com.amplify.common.handler.BaseRoutesHandler;
+import com.amplify.common.models.BalanceUpdateRequest;
 import com.amplify.common.models.ResponseModel;
 import com.amplify.common.models.TransferAmountRequest;
 import com.amplify.transaction.models.entity.Transaction;
@@ -46,7 +47,7 @@ public final class TransactionRoutesHandler extends BaseRoutesHandler {
     public Mono<ServerResponse> transferAmount(ServerRequest request) {
         var transferAmountRequestMono = request.bodyToMono(TransferAmountRequest.class);
         return transferAmountRequestMono.flatMap(transferAmountRequest -> {
-            return _send(transferAmountRequest)
+            return _send(transferAmountRequest, "account/transferAmount", HttpMethod.POST)
                     .bodyToMono(ResponseModel.class)
                     .flatMap(response -> {
                         if(response.getMessage().equals(Messages.SUCCESS)){
@@ -60,27 +61,40 @@ public final class TransactionRoutesHandler extends BaseRoutesHandler {
         });
     }
 
-    private Transaction buildTransaction(TransactionType transactionType, BigDecimal amount, String accountNumber){
+    public Mono<ServerResponse> balanceUpdate(ServerRequest request) {
+        var balanceUpdateRequestMono = request.bodyToMono(BalanceUpdateRequest.class);
+        return balanceUpdateRequestMono.flatMap(balanceUpdateRequest -> {
+            return _send(balanceUpdateRequest, "account/balanceUpdate", HttpMethod.PUT)
+                    .bodyToMono(ResponseModel.class)
+                    .flatMap(response -> {
+                        var transaction = buildTransaction(TransactionType.CREDIT, balanceUpdateRequest.getAmount(), balanceUpdateRequest.getAccountNumber());
+                        return this.successResponse(transactionService.save(transaction));
+                    });
+
+        });
+    }
+
+    private <T> WebClient.ResponseSpec _send(T request, String relativeUrl, HttpMethod method) {
+        return client
+                .build()
+                .method(method)
+                .uri(userApi + relativeUrl)
+                .body(BodyInserters.fromValue(request))
+                .retrieve()
+                .onStatus(HttpStatusCode::isError, clientResponse -> {
+                    return clientResponse.bodyToMono(ErrorResponse.class)
+                            .flatMap(errorBody -> {
+                                return Mono.error(new DetailedError(HttpStatus.BAD_REQUEST, "FAILURE", errorBody.getError()));
+                            });
+                });
+    }
+
+    private Transaction buildTransaction(TransactionType transactionType, BigDecimal amount, String accountNumber) {
         return Transaction.builder()
                 .transactionType(transactionType)
                 .amount(amount)
                 .accountNumber(accountNumber)
                 .dateTime(LocalDateTime.now())
                 .build();
-    }
-
-    private WebClient.ResponseSpec _send(TransferAmountRequest transferAmountRequest) {
-        return client
-                .build()
-                .method(HttpMethod.POST)
-                .uri(userApi+"account/transferAmount")
-                .body(BodyInserters.fromValue(transferAmountRequest))
-                .retrieve()
-                .onStatus(HttpStatusCode::isError, clientResponse -> {
-                    return clientResponse.bodyToMono(ErrorResponse.class)
-                            .flatMap(errorBody -> {
-                                return Mono.error(new DetailedError(HttpStatus.BAD_REQUEST, errorBody.getMessage()));
-                            });
-                });
     }
 }

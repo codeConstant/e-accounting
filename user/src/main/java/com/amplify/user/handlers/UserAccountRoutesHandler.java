@@ -2,6 +2,7 @@ package com.amplify.user.handlers;
 
 import com.amplify.common.enums.Messages;
 import com.amplify.common.handler.BaseRoutesHandler;
+import com.amplify.common.models.BalanceUpdateRequest;
 import com.amplify.common.models.TransferAmountRequest;
 import com.amplify.user.models.opaque.transaction.AccountCreateRequest;
 import com.amplify.user.models.opaque.transaction.StatusUpdateRequest;
@@ -68,6 +69,18 @@ public final class UserAccountRoutesHandler extends BaseRoutesHandler {
         var accountNumber = getPathVariableId(request);
         var account = accountService.findByAccountNumber(accountNumber);
         return this.successResponse(account);
+    }
+
+    public Mono<ServerResponse> balanceUpdate(ServerRequest request) {
+        var balanceUpdateRequestMono = request.bodyToMono(BalanceUpdateRequest.class);
+        return balanceUpdateRequestMono.flatMap(balanceUpdateRequest -> {
+            var errors = validateObject(balanceUpdateRequest);
+            if (errors.hasErrors()) {
+                return validationFailedResponse(errors);
+            }
+            var account = accountService.balanceUpdate(balanceUpdateRequest);
+            return this.successResponse(account);
+        });
     }
 
     public Mono<ServerResponse> transferAmount(ServerRequest request) {

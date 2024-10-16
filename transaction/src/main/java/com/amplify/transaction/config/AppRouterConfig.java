@@ -28,6 +28,7 @@ public class AppRouterConfig {
     public RouterFunction<ServerResponse> routerFunction() {
         return RouterFunctions.route()
                 .POST("/transaction/transferAmount", transactionRoutesHandler::transferAmount)
+                .PUT("/transaction/balanceUpdate", transactionRoutesHandler::balanceUpdate)
                 .build();
     }
 }

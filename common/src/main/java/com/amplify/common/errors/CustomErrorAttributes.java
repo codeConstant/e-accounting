@@ -27,11 +27,11 @@ public class CustomErrorAttributes extends DefaultErrorAttributes {
         if (error instanceof ValidationError ex) {
             response.put("status", 400);
             response.put("message", ex.getMessage());
-           // errorMap.put("details", ex.getDetails());
+            errorMap.put("details", ex.getDetails());
         } else if (error instanceof DataIntegrityViolationException ex) {
             response.put("status", 400);
             response.put("message", ex.getMessage());
-           // errorMap.put("details", dataIntegrityViolationException.getMessage());
+            errorMap.put("details", ex.getMessage());
         }
         else if(error instanceof WebClientException ex){
             response.put("status", 400);
@@ -40,7 +40,7 @@ public class CustomErrorAttributes extends DefaultErrorAttributes {
         else if (error instanceof DetailedError ex) {
             response.put("status", ex.getStatus().value());
             response.put("message", ex.getMessage());
-          //  errorMap.put("details", ex.getDetails());
+            errorMap.put("details", ex.getDetails());
         }
         else if (error instanceof BaseError ex) {
             HttpStatus status = ex.getStatus();

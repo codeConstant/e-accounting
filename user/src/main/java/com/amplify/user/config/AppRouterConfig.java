@@ -41,7 +41,7 @@ public class AppRouterConfig {
                 .GET("/account/findALL", userAccountRoutesHandler::findAll)
                 .POST("/account/transferAmount", userAccountRoutesHandler::transferAmount)
                 .GET("/account/getAccountDetails/{id}", userAccountRoutesHandler::getAccountDetails)
-
+                .PUT("/account/balanceUpdate", userAccountRoutesHandler::balanceUpdate)
                 .build();
     }
 }
